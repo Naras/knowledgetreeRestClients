@@ -1,0 +1,56 @@
+from __future__ import print_function
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: kapi auth
+configuration = swagger_client.Configuration()
+configuration.access_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ims2bFhwRUdsVkxOVTRNUG9KU09CbiJ9.eyJpc3MiOiJodHRwczovL2tub3dsZWRnZXRyZWVzZWN1cmUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTEzODE3ODcxMjM0MTM2Nzk4MzY0IiwiYXVkIjpbImh0dHA6Ly9hcGkuaXllbmdhcmxhYnMub3JnIiwiaHR0cHM6Ly9rbm93bGVkZ2V0cmVlc2VjdXJlLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE1ODY3MTMxNTYsImV4cCI6MTU4NjcyMDM1NiwiYXpwIjoiNzIwUFEzczZ6SzFGcU5HTVZaUE1RSzJYVmhPOW04ZXMiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIHJlYWQ6bWVzc2FnZXMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOm1lc3NhZ2VzIiwid3JpdGU6bWVzc2FnZXMiXX0.VLFwf05WBbVtMHniHA4h0s-pYu3sQZQGbyzoS0p23ArVoMFHupVwbndASMQYRKG4RRznf2FYFz0Tw7Ac8I-N7bgyZZF7Ru8wOHD-JXEVbmig6LYrHNA9rVMrv8Np7KhkiQ84NylMaYru-VaOQy28Y7TfLycB1AezCSERazhdxqeJOIdHvHeq4o3lHULUyWgF0FBp2jbWaafG_dFqV1ijar0rFP3g60YyUgVneRlYb1ssaVzqRY0rk5avzABbzylTNRgbkwhNtl2gXp22Ggo_02FwPgo4jSYDeE5AtvJhhugSAkRS6bqvhk4x2sFySOnj24mQiBzVvWtR5DPp3iyBGA'
+
+# create an instance of the API class
+api_instance = swagger_client.BaseControllerApi(swagger_client.ApiClient(configuration))
+
+try:
+    # get root person
+    api_response = api_instance.get_person_root()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling BaseControllerApi->get_person_root: %s\n" % e)
+
+# Configure OAuth2 access token for authorization: kapi auth
+configuration = swagger_client.Configuration()
+configuration.access_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ims2bFhwRUdsVkxOVTRNUG9KU09CbiJ9.eyJpc3MiOiJodHRwczovL2tub3dsZWRnZXRyZWVzZWN1cmUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTEzODE3ODcxMjM0MTM2Nzk4MzY0IiwiYXVkIjpbImh0dHA6Ly9hcGkuaXllbmdhcmxhYnMub3JnIiwiaHR0cHM6Ly9rbm93bGVkZ2V0cmVlc2VjdXJlLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE1ODY3MTMxNTYsImV4cCI6MTU4NjcyMDM1NiwiYXpwIjoiNzIwUFEzczZ6SzFGcU5HTVZaUE1RSzJYVmhPOW04ZXMiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIHJlYWQ6bWVzc2FnZXMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOm1lc3NhZ2VzIiwid3JpdGU6bWVzc2FnZXMiXX0.VLFwf05WBbVtMHniHA4h0s-pYu3sQZQGbyzoS0p23ArVoMFHupVwbndASMQYRKG4RRznf2FYFz0Tw7Ac8I-N7bgyZZF7Ru8wOHD-JXEVbmig6LYrHNA9rVMrv8Np7KhkiQ84NylMaYru-VaOQy28Y7TfLycB1AezCSERazhdxqeJOIdHvHeq4o3lHULUyWgF0FBp2jbWaafG_dFqV1ijar0rFP3g60YyUgVneRlYb1ssaVzqRY0rk5avzABbzylTNRgbkwhNtl2gXp22Ggo_02FwPgo4jSYDeE5AtvJhhugSAkRS6bqvhk4x2sFySOnj24mQiBzVvWtR5DPp3iyBGA'
+
+# create an instance of the API class
+api_instance = swagger_client.BaseControllerApi(swagger_client.ApiClient(configuration))
+
+try:
+    # get root subject
+    api_response = api_instance.get_subject_root()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling BaseControllerApi->get_subject_root: %s\n" % e)
+
+# Configure OAuth2 access token for authorization: kapi auth
+configuration = swagger_client.Configuration()
+configuration.access_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ims2bFhwRUdsVkxOVTRNUG9KU09CbiJ9.eyJpc3MiOiJodHRwczovL2tub3dsZWRnZXRyZWVzZWN1cmUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTEzODE3ODcxMjM0MTM2Nzk4MzY0IiwiYXVkIjpbImh0dHA6Ly9hcGkuaXllbmdhcmxhYnMub3JnIiwiaHR0cHM6Ly9rbm93bGVkZ2V0cmVlc2VjdXJlLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE1ODY3MTMxNTYsImV4cCI6MTU4NjcyMDM1NiwiYXpwIjoiNzIwUFEzczZ6SzFGcU5HTVZaUE1RSzJYVmhPOW04ZXMiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIHJlYWQ6bWVzc2FnZXMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOm1lc3NhZ2VzIiwid3JpdGU6bWVzc2FnZXMiXX0.VLFwf05WBbVtMHniHA4h0s-pYu3sQZQGbyzoS0p23ArVoMFHupVwbndASMQYRKG4RRznf2FYFz0Tw7Ac8I-N7bgyZZF7Ru8wOHD-JXEVbmig6LYrHNA9rVMrv8Np7KhkiQ84NylMaYru-VaOQy28Y7TfLycB1AezCSERazhdxqeJOIdHvHeq4o3lHULUyWgF0FBp2jbWaafG_dFqV1ijar0rFP3g60YyUgVneRlYb1ssaVzqRY0rk5avzABbzylTNRgbkwhNtl2gXp22Ggo_02FwPgo4jSYDeE5AtvJhhugSAkRS6bqvhk4x2sFySOnj24mQiBzVvWtR5DPp3iyBGA'
+
+# create an instance of the API class
+api_instance = swagger_client.BaseControllerApi(swagger_client.ApiClient(configuration))
+
+try:
+    # get root work
+    api_response = api_instance.get_work_root()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling BaseControllerApi->get_work_root: %s\n" % e)
+
+# create an instance of the API class
+api_instance = swagger_client.BaseControllerApi(swagger_client.ApiClient(configuration))
+
+try:
+    api_response = api_instance.healthcheck()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling BaseControllerApi->healthcheck: %s\n" % e)
