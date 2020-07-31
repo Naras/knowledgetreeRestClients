@@ -12,12 +12,14 @@
 
 from __future__ import absolute_import
 
-import unittest
-
+import random
+import unittest,json,requests
+addToLeaf, addToRoot, nodelete = False, False, False
 import swagger_client
-from models.person import Person  # noqa: E501
+# from models.person import Person  # noqa: E501
 from swagger_client.rest import ApiException
 
+prefix = 'http://api.iyengarlabs.org/v1/'
 
 class TestPerson(unittest.TestCase):
     """Person unit test stubs"""
@@ -30,9 +32,163 @@ class TestPerson(unittest.TestCase):
 
     def testPerson(self):
         """Test Person"""
-        # FIXME: construct object with mandatory attributes with example values
         # model = swagger_client.models.person.Person()  # noqa: E501
-        pass
+        response = requests.get(prefix + 'rootperson')
+        self.assertEqual(200, response.status_code)
+        responseAsDict = json.loads(response.text)
+        self.assertIn('person', responseAsDict)
+        self.assertIn('_id', responseAsDict['person'])
+        self.assertEqual('1001', responseAsDict['person']['_id'])
+        self.assertIn('name', responseAsDict['person'])
+        self.assertEqual('all work', responseAsDict['person']['name'])
+        print(responseAsDict)
+    def testAddModifyRemove(self):
+        relations = ['GURUSHISHYA', 'CONTEMPORARY']
+        response = requests.post(prefix + 'person/add',
+                                 json={"name": "Test_person",
+                                      "birthdate": "2020-07-08T14:57:18.207Z",
+                                      "deathdate": "2020-07-08T14:57:18.207Z",
+                                      "alive": True,
+                                      "biography": "test_person_biography",
+                                      "period": "test_period",
+                                      "affiliation": "test_affiliation",
+                                      "address": {
+                                        "state": "test_state",
+                                        "district": "test_district",
+                                        "zipcode": "test_zipcode",
+                                        "address": "test_address",
+                                        "country": "test_country"
+                                      }},
+                                 headers={'parentid': '1001',"relation": random.choice(relations)})
+        # self.assertIn(response.status_code, [200,201])
+        print('code %i text %s' % (response.status_code, response.text))
+        if response.status_code in [200,201]:
+            responseAsDict = json.loads(response.text)
+            print(responseAsDict)
+            self.assertIn('name',responseAsDict['person'])
+            self.assertEqual('Test_person',responseAsDict['person']['name'])
+            self.assertIn('biography',responseAsDict['person'])
+            # self.assertIn('person_relations',responseAsDict['person'])
+            # self.assertIn('persontype',responseAsDict['person']['person_relations'])
+            # self.assertIn(responseAsDict['person']['person_relations']['persontype'], relations)
+            created_id = responseAsDict['person']['_id']
+            response = requests.patch(prefix + 'person/update/' + created_id ,
+                                     json={'name': 'Test_person-update', 'biography': 'test_person_biography-update'})
+            # print('code %i text %s'%(response.status_code, response.text))
+            self.assertIn(response.status_code, [200, 201])
+            responseAsDict = json.loads(response.text)
+            # self.assertEqual('Test_person-update', responseAsDict['person']['name'])
+            self.assertEqual('test_person_biography-update',responseAsDict['person']['biography'])
+            response = requests.delete(prefix + 'person/remove/' + created_id + '?deletesubtree=false')
+            self.assertIn(response.status_code, [200,201])
+            self.assertEqual('"OK"', response.text)
+    def testNavigate(self):
+        response = requests.get(prefix + 'rootperson')
+        self.assertEqual(200, response.status_code)
+        responseAsDict = json.loads(response.text)
+        # print(responseAsDict)
+        self.assertIn('person', responseAsDict)
+        self.assertIn('name', responseAsDict['person'])
+        self.assertEqual('all work', responseAsDict['person']['name'])
+        # self.assertIn('components', responseAsDict['person'])
+        # self.assertIn('person_relations', responseAsDict['person'])
+        if 'person_relations' in responseAsDict['person']:
+            person_relations = responseAsDict['person']['person_relations']
+            getChildren(self, person_relations)
+        if addToRoot: addChild(self, responseAsDict['person'])  # each run adds a node to root
+    def testpersonRemoveallButRoot(self):
+            """Test person"""
+            # model = swagger_client.models.person.person()  # noqa: E501
+            response = requests.get(prefix + 'rootperson')
+            self.assertEqual(200, response.status_code)
+            responseAsDict = json.loads(response.text)
+            # print(responseAsDict)
+            self.assertIn('person', responseAsDict)
+            self.assertIn('name', responseAsDict['person'])
+            self.assertEqual('all work', responseAsDict['person']['name'])
+            if 'person_relations' in responseAsDict['person']:
+                person_relations = responseAsDict['person']['person_relations']
+                for entry in person_relations:
+                    if nodelete:
+                        print('from root -  child will be deleted %s' % entry['id'])
+                    else:
+                        print('from root -  child is deleted %s' % entry['id'])
+                        response = requests.delete(prefix + 'person/remove/' + entry['id'] + '?deletesubtree=true')
+                        self.assertIn(response.status_code, [200, 201])
+                        self.assertEqual('"OK"', response.text)
+
+def getChildren(self, person_relations):
+        for entry in person_relations:
+            # print(entry)
+            self.assertIn(entry['persontype'], ['GURUSHISHYA', 'CONTEMPORARY'])
+            Request_Url_child = entry['_links']['self']['href']
+            if str(Request_Url_child).startswith('/v1'): Request_Url_child = prefix + Request_Url_child
+            response = requests.get(Request_Url_child)
+            # self.assertEqual(200, response.status_code)
+            if response.status_code == 200:
+                responseAsDict = json.loads(response.text)
+                # for k,v in responseAsDict['person'].items(): print('k:%s v:%s'%(k,v))
+                node = responseAsDict['person']['_id']
+                if 'person_relations' in responseAsDict['person']:
+                    # has child nodes/subtree
+                    print('non-leaf node id:%s name:%s parent:%s\ndetails:%s\nchild exists - relation:%s id:%s' %
+                          (responseAsDict['person']['_id'], responseAsDict['person']['name'],
+                           responseAsDict['person']['person_parents'][0]['id'],
+                           responseAsDict['person'],
+                           responseAsDict['person']['person_relations'][0]['persontype'],
+                           responseAsDict['person']['person_relations'][0]['id']))
+                    # print(responseAsDict['person']['person_relations'][0])
+                    getChildren(self, responseAsDict['person']['person_relations'])
+                    # print('node:%s person:%s' % (node, responseAsDict['person']['person_relations'][0]))
+                else:
+                    # leaf node
+                    print('leaf node id:%s name:%s parent:%s\ndetails:%s' %
+                          (responseAsDict['person']['_id'], responseAsDict['person']['name'],
+                           responseAsDict['person']['person_parents'][0]['id'],
+                           responseAsDict['person']))
+                    # print('leaf node:%s parent:%s' % (node, responseAsDict['person']['person_parents'][0]['id']))
+                    if addToLeaf: addChild(self, responseAsDict['person'])  # add a child to each leaf
+
+                self.assertIn('name', responseAsDict['person'])
+                self.assertIn('person_parents', responseAsDict['person'])
+def addChild(self, node):
+    relations = ['GURUSHISHYA', 'CONTEMPORARY']
+    rel = random.choice(relations)
+    response = requests.post(prefix + 'person/add',
+                             json={"name":  'child-' + node['name'],
+                                   "birthdate": "2020-07-08T14:57:18.207Z",
+                                   "deathdate": "2020-07-08T14:57:18.207Z",
+                                   "alive": True,
+                                   "biography": "test_person_biography",
+                                   "period": "test_period",
+                                   "affiliation": "test_affiliation",
+                                   "address": {
+                                       "state": "test_state",
+                                       "district": "test_district",
+                                       "zipcode": "test_zipcode",
+                                       "address": "test_address",
+                                       "country": "test_country"
+                                   }},
+                             headers={'parentid': node['_id'], "relation": rel})
+    self.assertIn(response.status_code, [200, 201])
+    responseAsDict = json.loads(response.text)
+    created_id_child = responseAsDict['person']['_id']
+    print('child:', responseAsDict)
+    self.assertIn('name', responseAsDict['person'])
+    self.assertEqual('child-' + node['name'], responseAsDict['person']['name'])
+    self.assertIn('id', responseAsDict['person']['person_parents'][0])
+    self.assertEqual(node['_id'], responseAsDict['person']['person_parents'][0]['id'])
+    response = requests.get(prefix + 'person/' + node['_id'])
+    self.assertIn(response.status_code, [200, 201])
+    responseAsDict = json.loads(response.text)
+    print('node after:', responseAsDict)
+    # self.assertIn('persontype', responseAsDict['person']['person_relations'][0])
+    # self.assertIn(responseAsDict['person']['person_relations'][0]['persontype'], relations)
+    # self.assertIn('id', responseAsDict['person']['person_relations'][0])
+    # self.assertEqual(created_id_child, responseAsDict['person']['person_relations'][0]['id'])
+    # response = requests.delete(prefix + 'person/remove/' + node['_id'] + '?deletesubtree=true')
+    # self.assertIn(response.status_code, [200, 201])
+    # self.assertEqual('"OK"', response.text)
 
 
 if __name__ == '__main__':

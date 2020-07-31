@@ -12,18 +12,18 @@
 
 from __future__ import absolute_import
 
-import unittest
+import unittest, json, requests
 
 import swagger_client
-from api.health_controller_api import HealthControllerApi  # noqa: E501
+# from api.health_controller_api import HealthControllerApi  # noqa: E501
 from swagger_client.rest import ApiException
-
+prefix = 'http://api.iyengarlabs.org/v1/'
 
 class TestHealthControllerApi(unittest.TestCase):
     """HealthControllerApi unit test stubs"""
 
     def setUp(self):
-        self.api = api.health_controller_api.HealthControllerApi()  # noqa: E501
+        pass #self.api = api.health_controller_api.HealthControllerApi()  # noqa: E501
 
     def tearDown(self):
         pass
@@ -32,7 +32,13 @@ class TestHealthControllerApi(unittest.TestCase):
         """Test case for get_app_configs
 
         """
-        pass
+        response = requests.get(prefix + 'health')
+        self.assertEqual(200, response.status_code)
+        # print(json.loads(response.text))
+        self.assertIn('name',response.text)
+        self.assertEqual('api', json.loads(response.text)['name'])
+        self.assertIn('group',response.text)
+        self.assertEqual('com.knowledgetree', json.loads(response.text)['group'])
 
     def test_healthcheck1(self):
         """Test case for healthcheck1
